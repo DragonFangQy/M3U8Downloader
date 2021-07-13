@@ -561,7 +561,6 @@ class DownLoader(object):
         with open(file_path, "rb") as rb:
             context = rb.read()
             wf.write(context)
-        print(" merge_file ")
         self.pool_queue.put({"root_url": root_url, "status": "merge_num"})
 
     def test_queue(self, queue=None):
