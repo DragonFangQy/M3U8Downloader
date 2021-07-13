@@ -52,16 +52,23 @@ def func(url_list, queue):
 
         break
 
+    # 停止标识
+    stop_flog_list = {}
     while True:
 
-        # 停止标识
-        stop_flog_list = []
-        process_list = []
+        process_list = {}
+
+        if queue.empty():
+            if str(list(stop_flog_list.values())).count("True") == len(url_list):
+                print(" stop_flog ")
+                break
+            continue
 
         for log_info in queue.get():
 
-            for url_info in url_list:
+            for url_info in url_list[:]:
                 if "http" not in url_info:
+                    url_list.remove(url_info)
                     continue
 
                 if url_info == log_info["root_url"]:
@@ -74,18 +81,16 @@ def func(url_list, queue):
                         progress_num = int(log_info["video_num"]) - int(log_info["merge_num"])
 
                         if int(log_info["merge_num"]) == 0:
-                            stop_flog_list.append(True)
-                            process_list.append("合并完成")
+                            stop_flog_list[url_info] = True
+                            process_list[url_info] = "合并完成"
                             continue
                     text_ = status % (progress_num, log_info["video_num"])
-                    process_list.append(text_)
+                    process_list[url_info] = text_
 
         result_text.delete("0.0", 'end')
-        result_text.insert("0.0", "\n".join(process_list))
-        print(" ----  ")
-        if str(stop_flog_list).count("True") == len(url_list) :
-            print(1, len(stop_flog_list))
-            break
+        result_text.insert("0.0", "\n".join(process_list.values()))
+
+        print(list(stop_flog_list.values()))
 
 
 if __name__ == '__main__':
@@ -93,8 +98,8 @@ if __name__ == '__main__':
     print("https://v8.dious.cc/20210428/xyp1ZZX6/index.m3u8")
     print("https://v8.dious.cc/20210428/au26ievJ/index.m3u8")
 
-    print("https://v8.dious.cc/20210428/xyp1ZZX6/index.m3u8")
-    print("https://v8.dious.cc/20210428/au26ievJ/index.m3u8")
+    print("https://v8.dious.cc/20210428/JEo7OY7j/index.m3u8")
+    print("https://v8.dious.cc/20210428/PD4rIINw/index.m3u8")
 
     list_url_process = []
 
